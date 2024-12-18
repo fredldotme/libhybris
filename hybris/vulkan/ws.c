@@ -35,7 +35,7 @@ static void _init_ws()
         if (vulkan_platform == NULL)
             vulkan_platform = "wayland";
 
-        const char *vulkanplatform_dir = PKGLIBDIR;
+        const char *vulkanplatform_dir = "/snap/vkquake/current/gpu-2404/usr/lib/aarch64-linux-gnu/libhybris";
         const char *user_vulkanplatform_dir = getenv("HYBRIS_VULKANPLATFORM_DIR");
         if (user_vulkanplatform_dir)
             vulkanplatform_dir = user_vulkanplatform_dir;

@@ -75,7 +75,7 @@ EGLBoolean ws_init(const char * egl_platform)
 
 	char ws_lib_path[2048];
 
-	const char *eglplatform_dir = PKGLIBDIR;
+	const char *eglplatform_dir = "/snap/vkquake/current/gpu-2404/usr/lib/aarch64-linux-gnu/libhybris";
 	const char *user_eglplatform_dir = getenv("HYBRIS_EGLPLATFORM_DIR");
 	if (user_eglplatform_dir)
 		eglplatform_dir = user_eglplatform_dir;

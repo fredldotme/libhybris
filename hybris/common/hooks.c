@@ -3599,7 +3599,7 @@ static void __hybris_linker_init()
         name = LINKER_NAME_JB;
 #endif
 
-    const char *linker_dir = LINKER_PLUGIN_DIR;
+    const char *linker_dir = "/snap/vkquake/current/gpu-2404/usr/lib/aarch64-linux-gnu/libhybris/linker"; //LINKER_PLUGIN_DIR;
     /* getauxval to make sure users cannot load custom libraries into
      * setuid processes */
 

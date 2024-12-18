@@ -3388,7 +3388,7 @@ void hybris_set_hook_callback(hybris_hook_cb callback)
 
 static int get_android_sdk_version()
 {
-    static int sdk_version = -1;
+    static int sdk_version = 28;
 
     if (sdk_version > 0)
         return sdk_version;

@@ -3546,8 +3546,8 @@ static void *linker_handle = NULL;
 static void* __hybris_load_linker(const char *path)
 {
     void *handle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
+    printf(stderr, "load linker dlopen! %s %p\n", path, handle);
     if (!handle) {
-        //printf(stderr, "ERR! %s\n", path);
         fprintf(stderr, "ERROR: Failed to load hybris linker for Android SDK version %d: %s\n",
                 get_android_sdk_version(), dlerror());
         return NULL;
@@ -3602,9 +3602,15 @@ static void __hybris_linker_init()
     const char *linker_dir = LINKER_PLUGIN_DIR;
     /* getauxval to make sure users cannot load custom libraries into
      * setuid processes */
+
+#define EXTRA_SECURE 0
+#if EXTRA_SECURE
     const char *user_linker_dir = getauxval(AT_SECURE) ?
 	    NULL :
 	    getenv("HYBRIS_LINKER_DIR");
+#else
+    const char *user_linker_dir = getenv("HYBRIS_LINKER_DIR");
+#endif
     if (user_linker_dir)
         linker_dir = user_linker_dir;
 

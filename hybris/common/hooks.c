@@ -3403,6 +3403,9 @@ static int get_android_sdk_version()
     char value[PROP_VALUE_MAX];
     const int len = my_property_get("ro.build.version.sdk", value, LINKER_VERSION_DEFAULT_STRING);
 
+    printf("PROP LEN: %d", len);
+    if (len > 0) printf("PROP: %s", value);
+
     sdk_version = LINKER_VERSION_DEFAULT;
     if (len > 0) {
         sdk_version = atoi(value);

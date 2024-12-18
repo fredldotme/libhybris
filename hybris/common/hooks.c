@@ -3411,6 +3411,8 @@ static int get_android_sdk_version()
         sdk_version = (int)strtol(value, NULL, 10);
     }
 
+    printf("PROP VAL: %d\n", sdk_version);
+
 #ifdef UBUNTU_LINKER_OVERRIDES
     /* We override both frieza and turbo here until they are ready to be
      * upgraded to the newer linker. */
@@ -3430,7 +3432,7 @@ static int get_android_sdk_version()
     if (version_override)
         sdk_version = (int)strtol(version_override, NULL, 10);
 
-    LOGD("Using SDK API version %i\n", sdk_version);
+    // LOGD("Using SDK API version %i\n", sdk_version);
 
     return sdk_version;
 }
@@ -3482,7 +3484,7 @@ static void* __hybris_get_hooked_symbol(const char *sym, const char *requester)
     /* Allow newer hooks to override those which are available for all versions */
     key.name = sym;
     sdk_version = get_android_sdk_version();
-    printf("SDKVERSION: %d\n", sdk_version);
+    //printf("SDKVERSION: %d\n", sdk_version);
 
 #if defined(WANT_LINKER_O) || defined(WANT_LINKER_Q)
     if (sdk_version > 27)
@@ -3545,7 +3547,7 @@ static void* __hybris_load_linker(const char *path)
 {
     void *handle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
     if (!handle) {
-        fprintf(stderr, "ERR! %s\n", path);
+        //printf(stderr, "ERR! %s\n", path);
         fprintf(stderr, "ERROR: Failed to load hybris linker for Android SDK version %d: %s\n",
                 get_android_sdk_version(), dlerror());
         return NULL;
@@ -3568,7 +3570,7 @@ static void __hybris_linker_init()
     }
 
     int sdk_version = get_android_sdk_version();
-    printf("SDKVERSION2: %d\n", sdk_version);
+    //printf("SDKVERSION2: %d\n", sdk_version);
 
     char path[PATH_MAX];
     const char *name = LINKER_NAME_DEFAULT;
@@ -3685,7 +3687,7 @@ void* android_dlsym(void* handle, const char* symbol)
     ENSURE_LINKER_IS_LOADED();
 
     const int sdk_version = get_android_sdk_version();
-    printf("SDKVERSION3: %d\n", sdk_version);
+    //printf("SDKVERSION3: %d\n", sdk_version);
 
     // do not use hybris properties for older linkers
     if (sdk_version < 27) {

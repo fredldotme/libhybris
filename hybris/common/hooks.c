@@ -3482,6 +3482,7 @@ static void* __hybris_get_hooked_symbol(const char *sym, const char *requester)
     /* Allow newer hooks to override those which are available for all versions */
     key.name = sym;
     sdk_version = get_android_sdk_version();
+    printf("SDKVERSION: %d\n", sdk_version);
 
 #if defined(WANT_LINKER_O) || defined(WANT_LINKER_Q)
     if (sdk_version > 27)
@@ -3544,6 +3545,7 @@ static void* __hybris_load_linker(const char *path)
 {
     void *handle = dlopen(path, RTLD_NOW | RTLD_LOCAL);
     if (!handle) {
+        fprintf(stderr, "ERR! %s\n", path);
         fprintf(stderr, "ERROR: Failed to load hybris linker for Android SDK version %d: %s\n",
                 get_android_sdk_version(), dlerror());
         return NULL;
@@ -3566,6 +3568,7 @@ static void __hybris_linker_init()
     }
 
     int sdk_version = get_android_sdk_version();
+    printf("SDKVERSION2: %d\n", sdk_version);
 
     char path[PATH_MAX];
     const char *name = LINKER_NAME_DEFAULT;
@@ -3681,8 +3684,11 @@ void* android_dlsym(void* handle, const char* symbol)
 {
     ENSURE_LINKER_IS_LOADED();
 
+    const int sdk_version = get_android_sdk_version();
+    printf("SDKVERSION3: %d\n", sdk_version);
+
     // do not use hybris properties for older linkers
-    if (get_android_sdk_version() < 27) {
+    if (sdk_version < 27) {
         if (!strcmp(symbol, "property_list")) {
             return my_property_list;
         }

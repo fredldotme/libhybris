@@ -3403,12 +3403,12 @@ static int get_android_sdk_version()
     char value[PROP_VALUE_MAX];
     const int len = my_property_get("ro.build.version.sdk", value, LINKER_VERSION_DEFAULT_STRING);
 
-    printf("PROP LEN: %d", len);
-    if (len > 0) printf("PROP: %s", value);
+    printf("PROP LEN: %d\n", len);
+    if (len > 0) printf("PROP: %s\n", value);
 
     sdk_version = LINKER_VERSION_DEFAULT;
     if (len > 0) {
-        sdk_version = atoi(value);
+        sdk_version = (int)strtol(value, NULL, 10);
     }
 
 #ifdef UBUNTU_LINKER_OVERRIDES
@@ -3428,7 +3428,7 @@ static int get_android_sdk_version()
 
     char *version_override = getenv("HYBRIS_ANDROID_SDK_VERSION");
     if (version_override)
-        sdk_version = atoi(version_override);
+        sdk_version = (int)strtol(version_override, NULL, 10);
 
     LOGD("Using SDK API version %i\n", sdk_version);
 

@@ -36,9 +36,7 @@ static void _init_ws()
             vulkan_platform = "wayland";
 
         const char *vulkanplatform_dir = PKGLIBDIR;
-        const char *user_vulkanplatform_dir = getauxval(AT_SECURE)
-                                            ? NULL
-                                            : getenv("HYBRIS_VULKANPLATFORM_DIR");
+        const char *user_vulkanplatform_dir = getenv("HYBRIS_VULKANPLATFORM_DIR");
         if (user_vulkanplatform_dir)
             vulkanplatform_dir = user_vulkanplatform_dir;
 

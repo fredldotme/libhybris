@@ -3603,14 +3603,7 @@ static void __hybris_linker_init()
     /* getauxval to make sure users cannot load custom libraries into
      * setuid processes */
 
-#define EXTRA_SECURE 0
-#if EXTRA_SECURE
-    const char *user_linker_dir = getauxval(AT_SECURE) ?
-	    NULL :
-	    getenv("HYBRIS_LINKER_DIR");
-#else
     const char *user_linker_dir = getenv("HYBRIS_LINKER_DIR");
-#endif
     if (user_linker_dir)
         linker_dir = user_linker_dir;
 

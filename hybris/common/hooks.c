@@ -3401,10 +3401,10 @@ static int get_android_sdk_version()
     // property features which are mandatory now and cannot be stubbed as
     // previously.
     char value[PROP_VALUE_MAX];
-    my_property_get("ro.build.version.sdk", value, LINKER_VERSION_DEFAULT_STRING);
+    const int len = my_property_get("ro.build.version.sdk", value, LINKER_VERSION_DEFAULT_STRING);
 
     sdk_version = LINKER_VERSION_DEFAULT;
-    if (strlen(value) > 0) {
+    if (len > 0) {
         sdk_version = atoi(value);
     }
 

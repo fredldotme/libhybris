@@ -42,14 +42,12 @@ static void *vulkan_handle = NULL;
 
 #define VULKAN_IDLOAD(sym) \
  __asm__ (".type " #sym ", %gnu_indirect_function"); \
-typeof(sym) * sym ## _dispatch (void) __asm__ (#sym);\
-typeof(sym) * sym ## _dispatch (void) \
+typeof(sym) * sym (void) \
 { \
-    if (!vulkan_handle) _init_androidvulkan(); \
     return (void *) android_dlsym(vulkan_handle, #sym); \
 }
 
-static void _init_androidvulkan()
+__attribute__ ((constructor)) static void _init_androidvulkan()
 {
     vulkan_handle = (void *) android_dlopen(getenv("LIBVULKAN") ? getenv("LIBVULKAN") : "libvulkan.so", RTLD_LAZY);
 }

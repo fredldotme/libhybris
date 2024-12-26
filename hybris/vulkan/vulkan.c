@@ -20,6 +20,7 @@
 
 #define VK_USE_PLATFORM_ANDROID_KHR 1
 #define VK_USE_PLATFORM_WAYLAND_KHR 1
+#define VK_NO_PROTOTYPES 1
 
 #include <vulkan/vulkan.h>
 #include <dlfcn.h>
@@ -41,13 +42,12 @@ static void *vulkan_handle = NULL;
  */
 
 #define VULKAN_IDLOAD(sym) \
- __asm__ (".type " #sym ", %gnu_indirect_function"); \
-typeof(sym) * sym ## _dispatch (void) __asm__ (#sym);\
-typeof(sym) * sym ## _dispatch (void) \
+typeof(PFN_ ## sym) * sym ## _resolve (void) \
 { \
     if (!vulkan_handle) _init_androidvulkan(); \
     return (void *) android_dlsym(vulkan_handle, #sym); \
-}
+} \
+typeof(PFN_ ## sym) * sym () __attribute__((ifunc(#sym "_resolve")));
 
 static void _init_androidvulkan()
 {

@@ -3393,6 +3393,12 @@ static int get_android_sdk_version()
     if (sdk_version > 0)
         return sdk_version;
 
+    char *version_override = getenv("HYBRIS_ANDROID_SDK_VERSION");
+    if (version_override) {
+        sdk_version = atoi(version_override);
+        return sdk_version;
+    }
+
     // in case android-init is patched we can use my_property_get. in case it
     // is not use the default linker. this is such that we don't need the
     // properties patch in android >=8, because properties are read via bionic
@@ -3422,10 +3428,6 @@ static int get_android_sdk_version()
             sdk_version = 19;
     }
 #endif
-
-    char *version_override = getenv("HYBRIS_ANDROID_SDK_VERSION");
-    if (version_override)
-        sdk_version = atoi(version_override);
 
     LOGD("Using SDK API version %i\n", sdk_version);
 

@@ -44,12 +44,11 @@ static void *vulkan_handle = NULL;
 #define VULKAN_IDLOAD(sym) \
 typeof(PFN_ ## sym) * sym ## _resolve (void) \
 { \
-    if (!vulkan_handle) _init_androidvulkan(); \
     return (void *) android_dlsym(vulkan_handle, #sym); \
 } \
 typeof(PFN_ ## sym) * sym () __attribute__((ifunc(#sym "_resolve")));
 
-static void _init_androidvulkan()
+static void __attribute__((constructor)) _init_androidvulkan()
 {
     vulkan_handle = (void *) android_dlopen(getenv("LIBVULKAN") ? getenv("LIBVULKAN") : "libvulkan.so", RTLD_LAZY);
 }
@@ -61,9 +60,6 @@ static inline void hybris_vulkan_initialize()
 
 static void * _android_vulkan_dlsym(const char *symbol)
 {
-    if (vulkan_handle == NULL)
-        _init_androidvulkan();
-
     return android_dlsym(vulkan_handle, symbol);
 }
 

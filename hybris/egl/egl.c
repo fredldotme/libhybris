@@ -188,6 +188,50 @@ void hybris_egl_display_release_mappings(void)
 	}
 }
 
+static int process_maps_contains_str(const char* str)
+{
+	FILE* maps = fopen("/proc/self/maps", "r");
+	char* line;
+	unsigned int chars = 0;
+	unsigned int i = 0;
+	int c;
+
+	if (maps == NULL) {
+		return 0;
+	}
+
+	line = (char*)malloc(sizeof(char) * 1);
+	chars = 1;
+
+	while ((c = fgetc(maps)) != EOF) {
+		if (i >= chars) {
+			line = realloc(line, sizeof(char) * (chars + 1));
+			chars += 1;
+		}
+
+		line[i] = (char)c;
+
+		if ((char)c == '\n') {
+			if (strstr(line, str) != NULL) {
+				free(line);
+				fclose(maps);
+				return 1;
+			}
+
+			free(line);
+			line = (char*)malloc(sizeof(char) * 1);
+			chars = 1;
+			i = 0;
+		} else {
+			i += 1;
+		}
+	}
+
+	free(line);
+	fclose(maps);
+	return 0;
+}
+
 static const char * _defaultEglPlatform()
 {
 	char *egl_platform;
@@ -202,6 +246,24 @@ static const char * _defaultEglPlatform()
 	// The env variables may be defined yet empty
 	if (egl_platform == NULL || strcmp(egl_platform, "") == 0)
 		egl_platform = DEFAULT_EGL_PLATFORM;
+
+	// Automatic detection based on known library names also
+	// loaded by this process
+	if (strcmp(egl_platform, "auto") == 0) {
+		// If this process loaded libGL from gl4es
+		// then assume the null platform. Note that
+		// when gl4es is loaded, libGLX.so is not.
+		if (process_maps_contains_str("/libGL.so") &&
+			!process_maps_contains_str("/libGLX.so"))
+			egl_platform = "null";
+		// Same for Mir-related Qt QPAs as used in Ubuntu Touch
+		else if (process_maps_contains_str("/libqpa-ubuntumirclient.so") ||
+				process_maps_contains_str("/libqpa-mir1server.so"))
+			egl_platform = "null";
+		// Otherwise choose Wayland
+		else
+			egl_platform = "wayland";
+	}
 
 	return egl_platform;
 }
